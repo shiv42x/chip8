@@ -1,6 +1,15 @@
 chip8 interpreter in c++ using the olcPixelGameEngine for rendering (temporarily)
 
+build instructions (windows):
+```bash
+git clone https://github.com/shiv42x/chip8.git
+cd chip8
 
+mkdir build
+cd build
+cmake ..
+cmake --build . 
+```
 # License (OLC-3)
 Copyright 2018 - 2024 OneLoneCoder.com
 
