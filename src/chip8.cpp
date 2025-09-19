@@ -3,6 +3,7 @@
 #include <streambuf>
 #include <vector>
 #include <random>
+#include <chrono>
 #include "time.h"
 
 #include "chip8.h"
@@ -92,10 +93,6 @@ Chip8::~Chip8()
 
 void Chip8::emulate_cycle() 
 {
-	std::cout << "PC: " << std::hex << program_counter
-		<< " Opcode: " << std::hex << opcode << std::endl;
-
-	// combine 2 bytes
 	opcode = (memory[program_counter] << 8u) | memory[program_counter + 1];
 	program_counter += 2;
 
@@ -281,12 +278,10 @@ void Chip8::op_DXYN()
 			uint8_t sprite_pixel = (byte & (0x80u >> col));
 			if (sprite_pixel)
 			{
-				if (display.test((x + col) + VIDEO_WIDTH * (y + row)))
+				uint16_t idx = ((x + col) + VIDEO_WIDTH * (y + row)) % (VIDEO_WIDTH * VIDEO_HEIGHT);
+				if (display.test(idx))
 					registers[0xF] = 1;
-				display.set(
-					(x + col) + VIDEO_WIDTH * (y + row),
-					(display[(x + col) + VIDEO_WIDTH * (y + row)] ^ 1)
-				);
+				display.flip(idx);
 			}
 		}
 	}
@@ -415,7 +410,6 @@ void Chip8::op_FX07()
 /* wait for key press, store value of key in Vx */
 void Chip8::op_FX0A()
 {
-	std::cout << "???" << std::endl;
  	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 	for (uint8_t i = 0; i < 16; i++)
 	{
