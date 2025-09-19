@@ -10,6 +10,10 @@ cd build
 cmake ..
 cmake --build . 
 ```
+
+TODO:
+- add configurable emulation rate
+
 # License (OLC-3)
 Copyright 2018 - 2024 OneLoneCoder.com
 
