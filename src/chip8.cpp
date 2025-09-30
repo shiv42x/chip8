@@ -3,13 +3,23 @@
 #include <streambuf>
 #include <vector>
 #include <random>
-#include <chrono>
-#include "time.h"
 
 #include "chip8.h"
 
+
+Chip8::Chip8(int sim_rate) : sim_rate(sim_rate)
+{
+	init();
+}
+
+Chip8::~Chip8()
+{
+
+}
+
 void Chip8::init()
 {
+	last_ms = current_time_ms();
 	program_counter = 0x200;
 	index_register = 0;	
 	stack_pointer = 0;
@@ -81,27 +91,21 @@ void Chip8::init()
 	_tableF[0x65] = &Chip8::op_FX65;
 }
 
-Chip8::Chip8() 
+void Chip8::cycle() 
 {
-	init();
-}
+	int cycles_to_emulate = get_cycles();
+	for (int i = 0; i < cycles_to_emulate; i++)
+	{
+		opcode = (memory[program_counter] << 8u) | memory[program_counter + 1];
+		program_counter += 2;
 
-Chip8::~Chip8()
-{
+		((*this).*(_table[(opcode & 0xF000u) >> 12u]))();
 
-}
-
-void Chip8::emulate_cycle() 
-{
-	opcode = (memory[program_counter] << 8u) | memory[program_counter + 1];
-	program_counter += 2;
-
-	((*this).*(_table[(opcode & 0xF000u) >> 12u]))();
-
-	if (delay_timer > 0)
-		--delay_timer;
-	if (sound_timer > 0)
-		--sound_timer;
+		if (delay_timer > 0)
+			--delay_timer;
+		if (sound_timer > 0)
+			--sound_timer;
+	}
 }
 
 bool Chip8::load(const char* filename)
@@ -134,6 +138,21 @@ bool Chip8::check_key(uint8_t key)
 		return keypad.test(key);
 	else
 		return false;
+}
+
+std::chrono::milliseconds Chip8::current_time_ms() 
+{
+	return std::chrono::duration_cast<std::chrono::milliseconds>
+		(std::chrono::system_clock::now().time_since_epoch());
+}
+
+int Chip8::get_cycles()
+{
+	std::chrono::milliseconds current_ms = current_time_ms();
+	int cycles = (current_ms.count() - last_ms.count()) * sim_rate / 1000;
+	if (cycles > 0)
+		last_ms = current_ms;
+	return cycles;
 }
 
 void Chip8::table0()

@@ -7,7 +7,7 @@ class Example : public olc::PixelGameEngine
 {
 public:
 	Chip8 chip;
-	Example()
+	Example() : chip(600)
 	{
 		// Name your application
 		sAppName = "Example";
@@ -35,11 +35,11 @@ public:
 		if (GetKey(olc::Key::S).bPressed) chip.keypad.set(8, 0b1);
 		if (GetKey(olc::Key::D).bPressed) chip.keypad.set(9, 0b1);
 		if (GetKey(olc::Key::Z).bPressed) chip.keypad.set(10, 0b1);
-		if (GetKey(olc::Key::C).bPressed) chip.keypad.set(12, 0b1);
-		if (GetKey(olc::Key::K4).bPressed) chip.keypad.set(13, 0b1);
-		if (GetKey(olc::Key::R).bPressed) chip.keypad.set(14, 0b1);
-		if (GetKey(olc::Key::F).bPressed) chip.keypad.set(15, 0b1);
-		if (GetKey(olc::Key::V).bPressed) chip.keypad.set(16, 0b1);
+		if (GetKey(olc::Key::C).bPressed) chip.keypad.set(11, 0b1);
+		if (GetKey(olc::Key::K4).bPressed) chip.keypad.set(12, 0b1);
+		if (GetKey(olc::Key::R).bPressed) chip.keypad.set(13, 0b1);
+		if (GetKey(olc::Key::F).bPressed) chip.keypad.set(14, 0b1);
+		if (GetKey(olc::Key::V).bPressed) chip.keypad.set(15, 0b1);
 
 		if (GetKey(olc::Key::X).bReleased) chip.keypad.set(0, 0b0);
 		if (GetKey(olc::Key::K1).bReleased) chip.keypad.set(1, 0b0);
@@ -52,13 +52,13 @@ public:
 		if (GetKey(olc::Key::S).bReleased) chip.keypad.set(8, 0b0);
 		if (GetKey(olc::Key::D).bReleased) chip.keypad.set(9, 0b0);
 		if (GetKey(olc::Key::Z).bReleased) chip.keypad.set(10, 0b0);
-		if (GetKey(olc::Key::C).bReleased) chip.keypad.set(12, 0b0);
-		if (GetKey(olc::Key::K4).bReleased) chip.keypad.set(13, 0b0);
-		if (GetKey(olc::Key::R).bReleased) chip.keypad.set(14, 0b0);
-		if (GetKey(olc::Key::F).bReleased) chip.keypad.set(15, 0b0);
-		if (GetKey(olc::Key::V).bReleased) chip.keypad.set(16, 0b0);
+		if (GetKey(olc::Key::C).bReleased) chip.keypad.set(11, 0b0);
+		if (GetKey(olc::Key::K4).bReleased) chip.keypad.set(12, 0b0);
+		if (GetKey(olc::Key::R).bReleased) chip.keypad.set(13, 0b0);
+		if (GetKey(olc::Key::F).bReleased) chip.keypad.set(14, 0b0);
+		if (GetKey(olc::Key::V).bReleased) chip.keypad.set(15, 0b0);
 
-		chip.emulate_cycle();
+		chip.cycle();
 		for (int i = 0; i < 2048; i++) 
 		{
 			int x = i % 64;

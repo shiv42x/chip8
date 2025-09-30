@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <bitset>
+#include <chrono>
 #include <array>
 
 class Chip8 {
@@ -30,6 +31,8 @@ private:
 		0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 	};
 
+
+	/* EMULATION */
 	std::array<uint8_t, 4096>	memory;
 	std::array<uint8_t, 16>		registers;
 	uint16_t					index_register;
@@ -40,21 +43,29 @@ private:
 	uint8_t						delay_timer;
 	uint8_t						sound_timer;
 
+	/* EMULATION RATE TRACKING */
+	std::chrono::milliseconds	last_ms;
+
 	void init();
 	bool check_key(uint8_t key);
 
 public:
-	Chip8();
+	Chip8(int sim_rate);
 	~Chip8();
 
 	std::bitset<16>								keypad;
 	std::bitset<(VIDEO_WIDTH * VIDEO_HEIGHT)>	display;
 	bool										drawn_to = false; 
 
-	void emulate_cycle();
+	void cycle();
 	bool load(const char* filename);
 
 private:
+	/* TIME */
+	int									sim_rate;
+	int									get_cycles();
+	inline std::chrono::milliseconds	current_time_ms();
+
 	/* ARRAY OF POINTERS TO INSTRUCTIONS */
 	void table0();
 	void table8();
